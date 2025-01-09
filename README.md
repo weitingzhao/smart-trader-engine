@@ -1,1 +1,1 @@
-# smart-trader-strategy-engine
+# smart-trader-engine
