@@ -1,11 +1,5 @@
 import backtrader as bt
-
-import numpy as np
-
-import backtrader as bt
-import numpy as np
-
-from strategy.indicator.nadaraya_bollinger_bands import NadarayaBollingerBands
+from strategy.indicator.test_bollinger_bands import CustomBollingerBands
 
 
 # Create a Stratey
@@ -40,18 +34,21 @@ class Strategy1stOperation(bt.Strategy):
 
 
         # Indicators for the plotting show
-        # Add Nadaraya smoothed flux charts with three different bands
+        # Nadaraya smoothed flux charts with three different bands
+        self.custom_bbands = CustomBollingerBands(self.datas[0], subplot=False)
+
         # self.nadaraya_bb = NadarayaBollingerBands()
+        # self.dummy_idx = DummyIndicator()
 
         # Add Bollinger Bands indicator
-        bt.indicators.BollingerBands(self.datas[0], period=20, devfactor=3)
+        # bt.indicators.BollingerBands(self.datas[0], period=20, devfactor=3)
         bt.indicators.MACDHisto(self.datas[0])
 
         # bt.indicators.ExponentialMovingAverage(self.datas[0], period=25)
         # bt.indicators.SmoothedMovingAverage(rsi, period=10)
         # bt.indicators.WeightedMovingAverage(self.datas[0], period=25, subplot=True)
-        bt.indicators.StochasticSlow(self.datas[0])
-        bt.indicators.RSI(self.datas[0])
+        # bt.indicators.StochasticSlow(self.datas[0])
+        # bt.indicators.RSI(self.datas[0])
         # bt.indicators.ATR(self.datas[0], plot=False)
 
     def notify_order(self, order):

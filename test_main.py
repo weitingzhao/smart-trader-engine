@@ -1,9 +1,11 @@
 from __future__ import (
     absolute_import, division, print_function,unicode_literals
 )
-
+import matplotlib.pyplot as plt
+import numpy as np
 from bokeh.model import Model
 from backtrader_plotting.bokeh import BokehWebapp
+from backtrader_plotting.schemes.btscheme import tableau10
 from cerebro.ray_strategy import RayStrategyProfile
 from strategy.strategy1stoperation import Strategy1stOperation
 
@@ -22,7 +24,6 @@ def plot_bokeh(result, strategyProfile : RayStrategyProfile):
     webapp.start()
 
 def plot_default(result, strategyProfile : RayStrategyProfile):
-
     colors = [
         '#729ece', '#ff9e4a', '#67bf5c', '#ed665d', '#ad8bc9', '#a8786e',
         '#ed97ca', '#a2a2a2', '#cdcc5d','#6dccda']
@@ -34,8 +35,8 @@ def plot_default(result, strategyProfile : RayStrategyProfile):
         lcolors=colors,  # 重新设置主题颜色
         plotdist=0.1,  # 设置图形之间的间距
         bartrans=0.2, # 设置蜡烛图的透明度
-        barup='#ff9896', bardown='#98df8a',  # 设置蜡烛图上涨和下跌的颜色
-        volup='#ff9896', voldown='#98df8a',  # 设置成交量在行情上涨和下跌情况下的颜色
+        barup='#98df8a', bardown='#ff9896',  # 设置蜡烛图上涨和下跌的颜色
+        volup='#98df8a', voldown='#ff9896',  # 设置成交量在行情上涨和下跌情况下的颜色
         loc='#5f5a41',
         plotter=None, # 包含各种绘图属性的对象或类，如果为None，默认取 PlotScheme 类，如下所示
         numfigs=1, # 是否将图形拆分成多幅图展示，如果时间区间比较长，建议分多幅展示
@@ -104,13 +105,14 @@ def plot_default(result, strategyProfile : RayStrategyProfile):
 #     fig.tight_layout()  # 规整排版
 #     plt.show()
 
+
 def ideal_main():
     # Prepare the JSON object with parameters
     data_json = {
-        'symbols': 'DAVE',
+        'symbols': 'HIMS',
         'period': '3mo',  # Example period, replace with actual value if needed
         'interval': '60m',  # Example interval, replace with actual value if needed
-        'since': '2024-05-01',
+        'since': '2024-07-01',
         # 'from': '2000-01-01',
         # 'to': '2000-12-31'
     }
