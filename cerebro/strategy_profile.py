@@ -1,14 +1,11 @@
 import contextlib
 import io
-import ray
-
 from backtrader_plotting import Bokeh, OptBrowser
 from backtrader_plotting.schemes import Tradimo
 from cerebro.cerebro_base import cerebroBase
-from .strategy.test_strategy_1st import TestStrategy
 
 # @ray.remote
-class RayStrategyProfile(cerebroBase):
+class StrategyProfile(cerebroBase):
 
     def __init__(self, stdstats=False):
         super().__init__(stdstats)
@@ -66,7 +63,5 @@ class RayStrategyProfile(cerebroBase):
             scheme=Tradimo(), output_mode='memory')
 
         self.cerebro.plot(bokeh, iplot=False)
-        # plot = bokeh.plot_html(bokeh.figurepages[0].model, template="smart_trader.html.j2")
-
         browser = OptBrowser(bokeh, self.result)
         browser.start()

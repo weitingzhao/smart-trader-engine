@@ -5,8 +5,8 @@ from pandas.core.interchange.dataframe_protocol import DataFrame
 from test_bokeh_cz import TestStrategy
 
 
-@ray.remote
-class RayStrategyOptimize(cerebroBase):
+# @ray.remote
+class StrategyOptimize(cerebroBase):
 
     def __init__(self, stdstats=False):
         super().__init__(stdstats)

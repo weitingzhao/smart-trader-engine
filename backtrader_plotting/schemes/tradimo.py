@@ -7,8 +7,8 @@ class Tradimo(Blackly):
 
         dark_text = "#333333"
 
-        self.barup = "#389c4a"#"265371"
-        self.bardown = "#FC5D45"
+        self.barup = "#0b9981"#389c4a #"265371"
+        self.bardown = "#f23645" #FC5D45
 
         self.barup_wick = self.barup
         self.bardown_wick = self.bardown

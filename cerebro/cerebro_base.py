@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 import backtrader as bt
 from cerebro.data.stock_hist_bars_yahoo import StockHistBarsYahoo
@@ -92,17 +93,21 @@ class cerebroBase():
 
     def configure(self):
 
-        # Set our desired cash start
+        # Part 1. Broker
+        #           Set our desired cash start
         self.cerebro.broker.setcash(1000.0)
-        # Add a FixedSize sizer according to the stake
+        #           Add a FixedSize sizer according to the stake
         self.cerebro.addsizer(bt.sizers.FixedSize, stake=10)
-        # Set the Commission - 0.1% ... divide by 100 to remove the %
+        #           Set the Commission - 0.1% ... divide by 100 to remove the %
         self.cerebro.broker.setcommission(commission=0.001)
-        # Add the Analyzers
+
+        # Part 2. Analyzers
         # self.cerebro.addanalyzer(bt.analyzers.SQN)
         # self.cerebro.addanalyzer(bt.analyzers.TradeAnalyzer)  # visualize the drawdown evol
         # self.cerebro.addobserver(bt.observers.DrawDown)  # visualize the drawdown evol
 
+        # Part 3. Observer
+        self.cerebro.addobserver(bt.observers.Broker)
 
 
     def get_data_csv_example(self):
