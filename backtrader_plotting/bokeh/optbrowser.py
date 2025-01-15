@@ -77,7 +77,8 @@ class OptBrowser:
 
         # we have list of results, each result contains the result for one strategy. we don't support having more than one strategy!
         if len(self._optresults) > 0 and len(self._optresults[0]) > 1:
-            raise RuntimeError("You passed on optimization result based on more than one strategy which is not supported!")
+            return self._bokeh.figurepages[0].model
+            # raise RuntimeError("You passed on optimization result based on more than one strategy which is not supported!")
 
         selector, selector_cds = self._build_optresult_selector(self._optresults)
 

@@ -1,6 +1,7 @@
 import backtrader as bt
 from strategy.indicator.test_bollinger_bands import CustomBollingerBands
-
+import matplotlib.pyplot as plt
+import backtrader.indicators as btind
 
 # Create a Stratey
 class Strategy1stOperation(bt.Strategy):
@@ -19,6 +20,8 @@ class Strategy1stOperation(bt.Strategy):
 
 
     def __init__(self):
+        self.plot_objects = None  # Initialize plot_objects to store plot references
+
         # Keep a reference to the "close" line in the data[0] dataseries
         self.data_close = self.datas[0].close
 
@@ -32,10 +35,12 @@ class Strategy1stOperation(bt.Strategy):
         self.sma = bt.indicators.SimpleMovingAverage(
             self.datas[0], period=self.params.map_period)
 
+        # Let's put rsi on stochastic/sma or the other way round
+        # self.stoc = btind.Stochastic()
 
         # Indicators for the plotting show
         # Nadaraya smoothed flux charts with three different bands
-        self.custom_bbands = CustomBollingerBands(self.datas[0], subplot=False)
+        self.custom_bbands = CustomBollingerBands(self.data)
 
         # self.nadaraya_bb = NadarayaBollingerBands()
         # self.dummy_idx = DummyIndicator()
@@ -90,6 +95,13 @@ class Strategy1stOperation(bt.Strategy):
 
 
     def next(self):
+        # Get the max and min from Bollinger Bands
+        bb = self.custom_bbands
+
+        # Dynamically adjust plot range
+        # if self.plot_objects:
+        #     self.update_yaxis_range(bolu_max, bolu_min)
+
         # Simply log the closing price of the series from the reference
         self.log('Close, %.2f' % self.data_close[0])
 
@@ -112,6 +124,34 @@ class Strategy1stOperation(bt.Strategy):
                 # Keep track of the created order to avoid a 2nd order
                 self.order = self.sell()
 
+
+    def update_yaxis_range(self, bolu_max, bolu_min):
+        """Custom method to adjust Y-axis range."""
+        for figure in self.plot_objects[0].figures.values():
+            for axis in figure.axises:
+                if hasattr(axis, 'set_ylim'):
+                    axis.set_ylim(bolu_min * 0.95, bolu_max * 1.05)  # Add buffer for aesthetics
+
+    # Custom Plotting Logic
+    def custom_plot(cerebro):
+        fig, axes = cerebro.plot()[0]  # Get the figure and axes
+
+        # Adjust Y-axis dynamically for the main plot
+        for ax in axes:
+            if ax.get_title() == 'Data0':  # The main plot with data
+                # Find Bollinger Bands max and min
+                bb_lines = ax.lines[-3:]  # Last 3 lines: bolu_1, bolu_2, mid
+                bolu_1, bolu_2 = bb_lines[0].get_ydata(), bb_lines[1].get_ydata()
+
+                # Calculate the overall range
+                y_max = max(max(bolu_1), max(bolu_2))
+                y_min = min(min(bolu_1), min(bolu_2))
+
+                # Adjust the Y-axis range
+                ax.set_ylim(y_min * 0.95, y_max * 1.05)
+
+        # Show the plot
+        plt.show()
 
     def stop(self):
         self.log('(MA Period %2d) Ending Value %.2f' %

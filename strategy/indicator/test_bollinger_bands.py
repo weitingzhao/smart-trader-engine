@@ -7,8 +7,8 @@ class CustomBollingerBands(bt.Indicator):
         'mid',
         'bolu_1', 'bold_1',
         'bolu_2', 'bold_2',
+        'bolu_2b', 'bold_2b',
         'bolu_3', 'bold_3',
-        'bolu_4', 'bold_4',
     )
 
     params = (
@@ -28,16 +28,20 @@ class CustomBollingerBands(bt.Indicator):
 
         ('long_period', 100),
         ('long_stdev', 4.25),
-
-        # "Color Theme"
-        ('pallete_bear', 'red'),
-        ('pallete_bull', 'green'),
-        ('alpha1', 0.90),
-        ('alpha2', 0.85),
     )
 
+    plotinfo = dict(subplot=False) # Plot in the main chart
+
     plotlines = dict(
-        bolu_1=dict(_fill_gt=('bolu_2', ('#FF0000',0.30))),
+        bolu_1=dict(_fill_gt=('bolu_2', ('#FF0000', 0.15))),
+        bolu_2=dict( _fill_gt=('bolu_1', ('#FF0000',0.15))),
+        bold_1=dict(_fill_gt=('bold_2', ('#00FF00', 0.15))),
+        bold_2=dict(_fill_gt=('bold_1', ('#00FF00', 0.15))),
+
+        bolu_2b=dict(_fill_gt=('bolu_3', ('#FF0000', 0.30))),
+        bolu_3=dict(_fill_gt=('bolu_2b', ('#FF0000', 0.30))),
+        bold_2b=dict(_fill_gt=('bold_3', ('#00FF00', 0.30))),
+        bold_3=dict(_fill_gt=('bold_2b', ('#00FF00', 0.30))),
     )
 
 
@@ -60,9 +64,10 @@ class CustomBollingerBands(bt.Indicator):
         bb = bt.indicators.BollingerBands(self.data, period=self.p.short_period, devfactor=self.p.short_stdev)
         # self.l.mid = NadarayaWatsonSmoother(bb.l.mid, window=self.p.short_period, bandwidth=self.p.smooth_factor)
 
-        self.l.bolu_1, self.bb_bold_1 = self.smooth_bollinger(self.data, self.p.short_period, self.p.short_stdev)
-        self.l.bolu_2, self.bb_bold_2 = self.smooth_bollinger(self.data, self.p.med_period, self.p.short_stdev)
-        # self.l.bolu_3, self.l.bold_3 = self.smooth_bollinger(self.data, self.p.long_period, self.p.med_stdev)
+        self.l.bolu_1, self.l.bold_1 = self.smooth_bollinger(self.data, self.p.short_period, self.p.short_stdev)
+        self.l.bolu_2, self.l.bold_2 = self.smooth_bollinger(self.data, self.p.med_period, self.p.short_stdev)
+        self.l.bolu_2b, self.l.bold_2b = self.smooth_bollinger(self.data, self.p.med_period, self.p.short_stdev)
+        self.l.bolu_3, self.l.bold_3 = self.smooth_bollinger(self.data, self.p.long_period, self.p.med_stdev)
         # self.l.bolu_4, self.l.bold_4 = self.smooth_bollinger(self.data, self.p.long_period, self.p.long_stdev)
 
     def next(self):

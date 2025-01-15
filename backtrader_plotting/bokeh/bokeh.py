@@ -372,8 +372,8 @@ class Bokeh(metaclass=bt.MetaParams):
             meta = Div(text=metadata.get_metadata_div(figurepage.strategy, self.p.scheme.strategysrc))
             panels.append(TabPanel(title="Meta", child=meta))
 
-            running_code = TextAreaInput(value=metadata.get_strategy_souce_code(figurepage.strategy), rows=60, title="Strategy code:", width=800)
-            panels.append(TabPanel(title="Strategy", child=running_code))
+            # running_code = TextAreaInput(value=metadata.get_strategy_source_code(figurepage.strategy), rows=60, title="Strategy code:", width=800)
+            # panels.append(TabPanel(title="Strategy", child=running_code))
 
 
 
