@@ -989,16 +989,17 @@ class Cerebro(with_metaclass(MetaParams, object)):
         # for i, x in enumerate(self._plotfillers2)}
 
         figs = []
+        total_strats = len(self.runstrats)
+        i = 0
         for stratlist in self.runstrats:
             for si, strat in enumerate(stratlist):
                 rfig = plotter.plot(strat, figid=si * 100,
                                     numfigs=numfigs, iplot=iplot,
                                     start=start, end=end, use=use)
-                # pfillers=pfillers2)
-
                 figs.append(rfig)
-
             plotter.show()
+            print(f"Total length of stratlist: {total_strats}, Current index: {i}")
+            i = i + 1
 
         return figs
 

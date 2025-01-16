@@ -1,19 +1,34 @@
 import logging
-
 import backtrader as bt
 from strategy.indicator.bollinger_smoother_3bands import BollingerSmoother3bands
-import matplotlib.pyplot as plt
-import backtrader.indicators as btind
+from strategy.indicator.macd_histo_custom import CustomMACDHisto
+from strategy.indicator.macd_mtf import MACD_MTF
+from strategy.indicator.rs_bands import SupportResistanceBands
+from strategy.indicator.support_resistance_channels import SupportResistanceChannels
+
 
 # Create a Stratey
 class Strategy1stOperation(bt.Strategy):
     params = (
+        # Nadaraya smoothed Bollinger Bands
         ('map_period', 10),
         ('printlog', True),
         ('atr_period', 14),
 
         ('buy_delta', 0.50),
         ('sell_delta', 0.50),
+
+        # Support Resistance Channels
+        ('sr_period', 20),
+        ('channel_width', 5),
+        ('min_strength', 1),
+        ('max_num_sr', 6),
+        ('loopback', 290),
+
+        # MACD
+        ('fast_length', 12),
+        ('slow_length', 26),
+        ('signal_length', 9),
     )
 
     def log(self, txt, dt=None, doprint=False):
@@ -39,10 +54,28 @@ class Strategy1stOperation(bt.Strategy):
         # Part 1. Indicators
         # Nadaraya smoothed flux charts with three different bands
         self.bbands = BollingerSmoother3bands(self.data)
-        # Add ATR
-        self.atr = bt.indicators.ATR(self.datas[0], period=self.p.atr_period) # plot=False
         # Add MACD
-        bt.indicators.MACDHisto(self.datas[0])
+        self.macd = CustomMACDHisto(
+            self.data,
+            period_me1=self.p.fast_length, #12
+            period_me2=self.p.slow_length, #26
+            period_signal=self.p.signal_length #6
+        )
+
+        # self.macd = MACD_MTF(self.data)
+        # Add ATR
+        self.atr = bt.indicators.ATR(self.data, period=self.p.atr_period) # plot=False
+        # Add Support Resistance Channels
+        self.sr_v2 = SupportResistanceChannels(self.data, period=self.p.sr_period)
+        self.srchannels = SupportResistanceBands(
+            self.data,
+            period=self.p.sr_period,
+            channel_width=self.p.channel_width,
+            min_strength=self.p.min_strength,
+            max_num_sr=self.p.max_num_sr,
+            loopback=self.p.loopback
+        )
+
 
         # bt.indicators.ExponentialMovingAverage(self.datas[0], period=25)
         # bt.indicators.SmoothedMovingAverage(rsi, period=10)

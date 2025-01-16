@@ -1,7 +1,6 @@
-import contextlib
-import io
-from backtrader_plotting import Bokeh, OptBrowser
-from backtrader_plotting.schemes import Tradimo
+import json
+import pandas as pd
+
 from cerebro.cerebro_base import cerebroBase
 
 # @ray.remote
@@ -17,51 +16,27 @@ class StrategyProfile(cerebroBase):
         # Configure
         self.configure()
         # Add Strategy
-        self.cerebro.addstrategy(self.strategy, map_period=13)
+        self.cerebro.addstrategy(
+            self.strategy,
+            buy_delta=0.50,
+            sell_delta=0.50,
+        )
         # Run cerebro
         self.result = self.cerebro.run(optreturn=True)
+        self.results_to_dataframe()
         return self.result
 
-    def plot(self):
-        colors = [
-            '#729ece', '#ff9e4a', '#67bf5c', '#ed665d', '#ad8bc9', '#a8786e',
-            '#ed97ca', '#a2a2a2', '#cdcc5d', '#6dccda']
 
-        # Last Step Plot : Default
-        self.cerebro.plot(
-            iplot=False,  # 在 Jupyter Notebook 上绘图时是否自动 plot inline
-            style='candel',  # 设置主图行情数据的样式为蜡烛图
-            lcolors=colors,  # 重新设置主题颜色
-            plotdist=0.1,  # 设置图形之间的间距
-            bartrans=0.2,  # 设置蜡烛图的透明度
-            barup='#98df8a', bardown='#ff9896',  # 设置蜡烛图上涨和下跌的颜色
-            volup='#98df8a', voldown='#ff9896',  # 设置成交量在行情上涨和下跌情况下的颜色
-            loc='#5f5a41',
-            plotter=None,  # 包含各种绘图属性的对象或类，如果为None，默认取 PlotScheme 类，如下所示
-            numfigs=1,  # 是否将图形拆分成多幅图展示，如果时间区间比较长，建议分多幅展示
-        )  # 对应 PlotScheme 中的各个参数
+    def results_to_dataframe(self):
+        json_results = []
+        df_results = []
 
-    def bokeh(self):
-        st0 = self.result[0]
-        output = io.StringIO()
-        with contextlib.redirect_stdout(output):
-            for alyzer in st0.analyzers:
-                alyzer.print()
-        analysis_result = output.getvalue()
-        output.close()
+        for strat in self.result:
+            for analyz in strat.analyzers:
+                result = analyz.get_analysis()
 
-        # Print out the starting conditions
-        print('Starting Portfolio Value: %.2f' % self.cerebro.broker.getvalue())
-        print('Final Portfolio Value: %.2f' % self.cerebro.broker.getvalue())
+                json_results.append(result)
+                df_results.append(self.flatten_dict(result))
 
-        # Save the plot as an image
-        # Plot the result
-        bokeh = Bokeh(
-            # kwargs
-            style='bar', plot_mode='single',
-            # params
-            scheme=Tradimo(), output_mode='memory')
-
-        self.cerebro.plot(bokeh, iplot=False)
-        browser = OptBrowser(bokeh, self.result)
-        browser.start()
+        self.result_json = json.dumps(json_results, indent=4)
+        self.result_df = pd.DataFrame(df_results)
