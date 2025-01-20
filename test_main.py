@@ -40,8 +40,8 @@ def run_strategy(data_json, is_optimize=False):
 
     # Step 6. only Plot the strategy when is not optimize. optimize result is huge can't plot
     if not is_optimize or is_optimize:
-        # strategyProfile.plot()
-        strategyProfile.bokeh()
+        strategyProfile.plot()
+        # strategyProfile.bokeh()
         return
 
 
@@ -49,7 +49,7 @@ def run_strategy(data_json, is_optimize=False):
 if __name__ == '__main__':
     # Prepare the JSON object with parameters
     data_json = {
-        'symbols': 'AVXL',
+        'symbols': 'HIMS',
         'period': '6mo',  # Example period, replace with actual value if needed
         'interval': '60m',  # Example interval, replace with actual value if needed
         'since': '2024-07-01',

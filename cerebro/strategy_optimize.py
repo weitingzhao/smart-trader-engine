@@ -35,8 +35,8 @@ class StrategyOptimize(cerebroBase):
         # Add Strategy
         self.cerebro.optstrategy(
             self.strategy,
-            buy_delta=np.arange(1, 0, -0.5),
-            sell_delta=np.arange(1, 0, -0.5),
+            buy_delta=np.arange(1, 0, 0.5),
+            sell_delta=np.arange(1, 0, 0.5),
         )
 
         # Run cerebro

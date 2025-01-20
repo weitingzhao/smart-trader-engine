@@ -1,5 +1,5 @@
 import backtrader as bt
-from strategy.indicator.nadaraya_watson_smoother import NadarayaWatsonSmoother
+from strategy.feature.nadaraya_watson_smoother import NadarayaWatsonSmoother
 
 
 class BollingerSmoother3bands(bt.Indicator):
